@@ -1,0 +1,36 @@
+# dependencies
+InventoryManagementFE/node_modules/
+InventoryManagementFE/.pnp
+InventoryManagementFE/.pnp.js
+
+# testing
+InventoryManagementFE/coverage/
+
+# production
+InventoryManagementFE/build/
+
+# python
+InventoryManagementBE/venv/
+InventoryManagementBE/__pycache__/
+InventoryManagementBE/*.pyc
+InventoryManagementBE/.env
+InventoryManagementBE/instance/
+InventoryManagementBE/.pytest_cache/
+InventoryManagementBE/.coverage
+InventoryManagementBE/htmlcov/
+InventoryManagementBE/dist/
+InventoryManagementBE/build/
+InventoryManagementBE/*.egg-info/
+InventoryManagementBE/flask_session/
+InventoryManagementBE/*.db
+InventoryManagementBE/uploads/
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
