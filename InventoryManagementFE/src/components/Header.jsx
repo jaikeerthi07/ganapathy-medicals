@@ -255,7 +255,10 @@ const Header = ({ toggleSidebar, isOpen }) => {
         {/* User */}
         <div style={styles.userSection}>
           <FaUserCircle />
-          <span style={styles.username}>{user?.username || "Admin"}</span>
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
+            <span style={styles.username}>{user?.full_name || user?.username || "Admin"}</span>
+            
+          </div>
         </div>
 
         {/* Logout */}
@@ -380,6 +383,7 @@ const styles = {
     backgroundColor: "#1f2937", padding: "6px 12px", borderRadius: "20px",
   },
   username: { fontSize: "14px", color: "#fff" },
+  userId: { fontSize: "11px", color: "#9ca3af" },
   logoutBtn: {
     display: "flex", alignItems: "center", gap: "6px",
     padding: "6px 14px", backgroundColor: "#ef4444", color: "#fff",

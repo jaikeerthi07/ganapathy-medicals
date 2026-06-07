@@ -48,9 +48,10 @@ const Sidebar = ({ isOpen }) => {
 
   // Get user and permissions from localStorage
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  console.log(user)
+
   const userPermissions = user?.permissions || [];
   const userType = user?.user_type || "";
-
   // Helper to check if a submodule is permitted
   const hasPermission = (submodule_id) => {
     // Case-insensitive check for Admin role or fallback to admin email

@@ -8,12 +8,12 @@ const Bill = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [barcode, setBarcode] = useState('');
-  
+
   // Bill information
   const [billNumber, setBillNumber] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [currentTime, setCurrentTime] = useState('');
-  
+
   // Customer information
   const [customerName, setCustomerName] = useState('Walk-in Customer');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -21,8 +21,8 @@ const Bill = () => {
   const [customerGST, setCustomerGST] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerType, setCustomerType] = useState('external'); // 'internal' or 'external'
-  const [customerDiscount, setCustomerDiscount] = useState(0); // Default discount for customer type
-  
+  const [, setCustomerDiscount] = useState(0); // Default discount for customer type
+
   // Patient / Doctor information
   const [doctorName, setDoctorName] = useState('');
   const [doctorRegNo, setDoctorRegNo] = useState('');
@@ -30,30 +30,31 @@ const Bill = () => {
   const [patientGender, setPatientGender] = useState('Male');
   const [prescriptionImage, setPrescriptionImage] = useState(null);
   const [isPrescriptionRequired, setIsPrescriptionRequired] = useState(false);
-  
-  
+  const [patientName, setPatientName] = useState('');
+
+
   // Company information (from selected company)
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [companies, setCompanies] = useState([]);
   const [showCompanySelector, setShowCompanySelector] = useState(false);
-  
+
   // User information (bill created by)
   const [createdBy, setCreatedBy] = useState('');
-  
+
   // Discount information
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState('percentage'); // 'percentage' or 'fixed'
   const [manualDiscount, setManualDiscount] = useState(false); // Track if discount is manually set
-  
+
   // Tax information
   const [tax, setTax] = useState(0);
   const [taxType, setTaxType] = useState('percentage'); // 'percentage' or 'fixed'
-  
+
   // Payment information
   const [paidAmount, setPaidAmount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState('cash');
   const [paymentStatus, setPaymentStatus] = useState('pending');
-  
+
   // Payment details for different methods
   const [cashReceived, setCashReceived] = useState(0);
   const [cardNumber, setCardNumber] = useState('');
@@ -62,7 +63,7 @@ const Bill = () => {
   const [transactionId, setTransactionId] = useState('');
   const [bankName, setBankName] = useState('');
   const [chequeNumber, setChequeNumber] = useState('');
-  
+
   // UI states
   const [loading, setLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -74,16 +75,17 @@ const Bill = () => {
   const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [lastGeneratedBill, setLastGeneratedBill] = useState(null);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
-  const [savedBillId, setSavedBillId] = useState(null);
+  const [, setSavedBillId] = useState(null);
   const [fetchingCustomer, setFetchingCustomer] = useState(false);
 
   // Shop details (will be overridden by selected company)
   const defaultShopDetails = {
-    name: 'GANAPATHYMEDICALS',
-    address: 'No.71, M.T.H.road (Opp padi post office)',
-    city: 'Padi, Chennai - 600 050',
-    phone: 'PH: 044-12345678',
-    gst: 'GST: 33AAAAA0000A1Z5',
+    name: 'SRI GANAPATHY MEDICALS',
+    subtitle: 'CHEMISTS & DRUGGISTS',
+    address: '158,M.R.H.Road,Thabalpetti, Madhavaram, Chennai- 60.',
+    city: '',
+    phone: '98401 50118',
+    dlNo: 'D.L. No. 0175 / ZIV / 20 / 21',
   };
 
   const [shopDetails, setShopDetails] = useState(defaultShopDetails);
@@ -239,15 +241,13 @@ const Bill = () => {
     },
     searchResults: {
       background: 'white',
-      border: '1px solid #ddd',
+      border: '1px solid #007bff',
       borderRadius: '5px',
       maxHeight: '300px',
       overflowY: 'auto',
       marginTop: '10px',
-      boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-      position: 'absolute',
-      width: 'calc(100% - 40px)',
-      zIndex: 1000,
+      boxShadow: '0 4px 12px rgba(0,123,255,0.15)',
+      width: '100%',
     },
     searchResultItem: {
       padding: '12px',
@@ -299,7 +299,7 @@ const Bill = () => {
     },
     selectedItem: {
       display: 'grid',
-      gridTemplateColumns: '2fr 1fr 80px 100px 40px',
+      gridTemplateColumns: '2fr 1fr 110px 100px 40px',
       gap: '10px',
       padding: '12px',
       background: '#f8f9fa',
@@ -380,26 +380,28 @@ const Bill = () => {
     },
     billHeader: {
       textAlign: 'center',
-      marginBottom: '12px',
-      paddingBottom: '8px',
+      marginBottom: '4px',
+      paddingBottom: '2px',
       borderBottom: '1px dashed #333',
     },
     billHeaderH1: {
-      fontSize: '16px',
-      letterSpacing: '1px',
+      fontSize: '22px',
+      letterSpacing: '0px',
       marginBottom: '3px',
-      color: '#333',
+      color: '#000',
       fontWeight: 'bold',
+      textAlign: 'center',
     },
     billHeaderP: {
       fontSize: '9px',
       color: '#666',
       margin: '1px 0',
       lineHeight: '1.2',
+      textAlign: 'center',
     },
     billInfo: {
-      margin: '10px 0',
-      padding: '6px 0',
+      margin: '4px 0',
+      padding: '4px 0',
       borderTop: '1px dashed #333',
       borderBottom: '1px dashed #333',
     },
@@ -487,22 +489,34 @@ const Bill = () => {
       margin: '10px 0',
     },
     billItemsHeader: {
-      display: 'grid',
-      gridTemplateColumns: '2fr 1fr 1fr 1.5fr',
       fontWeight: 'bold',
-      padding: '4px 0',
-      borderBottom: '1px solid #333',
-      fontSize: '10px',
+      padding: '4px 2px',
+      fontSize: '9px',
       background: '#f0f0f0',
-      paddingLeft: '2px',
     },
     billItem: {
-      display: 'grid',
-      gridTemplateColumns: '2fr 1.2fr 0.8fr 1.2fr',
-      padding: '4px 0',
-      borderBottom: '1px dotted #ccc',
+      padding: '4px 2px',
       fontSize: '9px',
-      paddingLeft: '2px',
+    },
+    billTable: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      fontSize: '9px',
+    },
+    billTh: {
+      padding: '3px 2px',
+      fontWeight: 'bold',
+      fontSize: '9px',
+      background: '#f0f0f0',
+      borderTop: '1px solid #333',
+      borderBottom: '1px solid #333',
+      textAlign: 'left',
+    },
+    billTd: {
+      padding: '3px 2px',
+      fontSize: '9px',
+      borderBottom: '1px dotted #ccc',
+      verticalAlign: 'top',
     },
     billItemEmpty: {
       textAlign: 'center',
@@ -779,9 +793,8 @@ const Bill = () => {
   }, []);
 
   // Fetch companies on mount
-  useEffect(() => {
-    fetchCompanies();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchCompanies(); }, []);
 
   // Fetch companies from API
   const fetchCompanies = async () => {
@@ -808,10 +821,12 @@ const Bill = () => {
         const company = response.data;
         setShopDetails({
           name: company.name || defaultShopDetails.name,
+          subtitle: company.subtitle || defaultShopDetails.subtitle,
           address: company.address || defaultShopDetails.address,
           city: company.city || defaultShopDetails.city,
           phone: company.phone || '',
           gst: company.gst_number || '',
+          dlNo: company.dl_no || defaultShopDetails.dlNo,
         });
       }
     } catch (err) {
@@ -834,13 +849,13 @@ const Bill = () => {
     const year = now.getFullYear().toString().slice(-2);
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
-    
+
     const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let random = '';
     for (let i = 0; i < 8; i++) {
       random += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
     }
-    
+
     setBillNumber(`BT-${year}${month}${day}-${random}`);
   };
 
@@ -863,12 +878,13 @@ const Bill = () => {
   useEffect(() => {
     generateBillNumber();
     updateDateTime();
-    
+
     const interval = setInterval(updateDateTime, 60000);
     return () => clearInterval(interval);
   }, []);
 
   // Search products with debounce
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (searchQuery.length >= 2) {
@@ -877,11 +893,11 @@ const Bill = () => {
         setSearchResults([]);
       }
     }, 500);
-
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
   // Update payment status when paid amount changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const total = calculateTotal();
     if (paidAmount === 0) {
@@ -959,28 +975,43 @@ const Bill = () => {
         }
         
         #billPaper .bill-header {
-          border-bottom: 1px dashed #000 !important;
+          border-bottom: none !important;
+          margin-bottom: 4px !important;
+          padding-bottom: 0px !important;
+        }
+        
+        #billPaper .bill-header h1 {
+          font-size: 22px !important;
+          font-weight: bold !important;
+          letter-spacing: 0px !important;
+          color: #000 !important;
+          text-align: center !important;
+        }
+        
+        #billPaper .bill-header p {
+          text-align: center !important;
         }
         
         #billPaper .bill-info {
-          border-top: 1px dashed #000 !important;
-          border-bottom: 1px dashed #000 !important;
+          border-top: none !important;
+          border-bottom: none !important;
+          margin-top: 4px !important;
+          margin-bottom: 4px !important;
+          padding: 2px 0 !important;
         }
         
         #billPaper .bill-items-header {
           border-bottom: 1px solid #000 !important;
         }
         
-        #billPaper .bill-item {
-          border-bottom: 1px dotted #000 !important;
-        }
+        
         
         #billPaper .bill-summary {
           border-top: 1px solid #000 !important;
         }
         
         #billPaper .bill-footer {
-          border-top: 1px dashed #000 !important;
+          border-top: none !important;
         }
         
         #billPaper * {
@@ -1036,7 +1067,7 @@ const Bill = () => {
       }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
@@ -1045,7 +1076,7 @@ const Bill = () => {
   // Clear payment method specific fields when method changes
   useEffect(() => {
     setShowPaymentDetails(true);
-    switch(paymentMethod) {
+    switch (paymentMethod) {
       case 'cash':
         setCardNumber('');
         setCardHolderName('');
@@ -1083,7 +1114,7 @@ const Bill = () => {
   // Fetch customer by phone
   const fetchCustomerByPhone = async (phone) => {
     if (phone.length < 10) return;
-    
+
     setFetchingCustomer(true);
     try {
       const response = await api.get(`/billing/customer/${phone}`);
@@ -1105,6 +1136,7 @@ const Bill = () => {
   };
 
   // Auto-fetch customer when phone reaches 10 digits
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const cleanPhone = customerPhone.replace(/\D/g, '');
     if (cleanPhone.length === 10) {
@@ -1118,10 +1150,10 @@ const Bill = () => {
   // Search products API call
   const searchProducts = async () => {
     if (!isAuthenticated) return;
-    
+
     setSearchLoading(true);
     setError('');
-    
+
     try {
       const response = await api.get(`/billing/search-products?q=${encodeURIComponent(searchQuery)}`);
       setSearchResults(response.data);
@@ -1142,10 +1174,10 @@ const Bill = () => {
   const getProductByBarcode = async () => {
     if (!isAuthenticated) return;
     if (!barcode.trim()) return;
-    
+
     setLoading(true);
     setError('');
-    
+
     try {
       const response = await api.get(`/billing/product/barcode/${barcode}`);
       addProductToBill(response.data);
@@ -1165,16 +1197,16 @@ const Bill = () => {
   // Add product to bill
   const addProductToBill = (product) => {
     const existingProduct = selectedProducts.find(p => p.id === product.id);
-    
+
     if (existingProduct) {
       if (existingProduct.quantity < product.quantity) {
         const updatedProducts = selectedProducts.map(p =>
           p.id === product.id
-            ? { 
-                ...p, 
-                quantity: p.quantity + 1, 
-                total: (p.quantity + 1) * p.sellPrice 
-              }
+            ? {
+              ...p,
+              quantity: p.quantity + 1,
+              total: (p.quantity + 1) * p.sellPrice
+            }
             : p
         );
         setSelectedProducts(updatedProducts);
@@ -1201,14 +1233,14 @@ const Bill = () => {
           maxQuantity: product.quantity,
           isPrescriptionRequired: product.isPrescriptionRequired || false
         };
-        
+
         setSelectedProducts([...selectedProducts, newProduct]);
-        
+
         // Check if this new product requires a prescription
         if (newProduct.isPrescriptionRequired) {
           setIsPrescriptionRequired(true);
         }
-        
+
         setSuccess(`${product.name} added to bill`);
         setTimeout(() => setSuccess(''), 2000);
       } else {
@@ -1216,7 +1248,7 @@ const Bill = () => {
         setTimeout(() => setError(''), 3000);
       }
     }
-    
+
     setSearchQuery('');
     setSearchResults([]);
   };
@@ -1224,10 +1256,10 @@ const Bill = () => {
   // Update quantity - Now sets to 0 instead of deleting
   const updateQuantity = (productId, newQuantity) => {
     const product = selectedProducts.find(p => p.id === productId);
-    
+
     if (product) {
       newQuantity = parseInt(newQuantity) || 0;
-      
+
       // Allow quantity to be 0 (will show as 0 quantity item)
       if (newQuantity >= 0 && newQuantity <= product.maxQuantity) {
         const updatedProducts = selectedProducts.map(p =>
@@ -1236,7 +1268,7 @@ const Bill = () => {
             : p
         );
         setSelectedProducts(updatedProducts);
-        
+
         if (newQuantity === 0) {
           setSuccess(`${product.name} quantity set to 0`);
         } else {
@@ -1269,7 +1301,7 @@ const Bill = () => {
   const calculateDiscountAmount = () => {
     const subtotal = calculateSubtotal();
     if (subtotal === 0) return 0;
-    
+
     if (discountType === 'percentage') {
       return (subtotal * discount) / 100;
     }
@@ -1281,9 +1313,9 @@ const Bill = () => {
     const subtotal = calculateSubtotal();
     const discountAmount = calculateDiscountAmount();
     const afterDiscount = subtotal - discountAmount;
-    
+
     if (afterDiscount <= 0) return 0;
-    
+
     if (taxType === 'percentage') {
       return (afterDiscount * tax) / 100;
     }
@@ -1315,7 +1347,7 @@ const Bill = () => {
     setManualDiscount(true); // Mark as manually set
     const numValue = parseFloat(value) || 0;
     const subtotal = calculateSubtotal();
-    
+
     // Validate based on discount type
     if (discountType === 'percentage') {
       if (numValue > 100) {
@@ -1336,7 +1368,7 @@ const Bill = () => {
         setDiscount(numValue);
       }
     }
-    
+
     // Clear error after 3 seconds
     setTimeout(() => setError(''), 3000);
   };
@@ -1346,7 +1378,7 @@ const Bill = () => {
     setManualDiscount(true); // Mark as manually set
     const subtotal = calculateSubtotal();
     setDiscountType(type);
-    
+
     // Convert discount value when type changes
     if (type === 'percentage') {
       // If switching to percentage, convert fixed amount to percentage
@@ -1398,7 +1430,7 @@ const Bill = () => {
   // Save bill to database
   const saveBillToDatabase = async () => {
     const activeProducts = selectedProducts.filter(p => p.quantity > 0);
-    
+
     if (activeProducts.length === 0) {
       setError('No items with quantity > 0 to save!');
       return null;
@@ -1418,6 +1450,7 @@ const Bill = () => {
         customerType: customerType === 'internal' ? 'internal' : 'regular',
         doctorName: doctorName,
         doctorRegNo: doctorRegNo,
+        patientName: patientName,
         patientAge: patientAge,
         patientGender: patientGender,
         prescriptionImage: prescriptionImage,
@@ -1451,7 +1484,7 @@ const Bill = () => {
         });
         setShowWhatsApp(true);
         setBillSaved(true);
-        
+
         return {
           billId: response.data.billId,
           billNumber: response.data.billNumber
@@ -1477,6 +1510,7 @@ const Bill = () => {
     const due = calculateDue();
     const change = calculateChange();
     const activeProducts = selectedProducts.filter(p => p.quantity > 0);
+
 
     return `
       <!DOCTYPE html>
@@ -1511,7 +1545,7 @@ const Bill = () => {
             
             .bill-header {
               text-align: center;
-              margin-bottom: 20px;
+              margin-bottom: 4px;
             }
             .bill-logo {
               max-width: 120px;
@@ -1520,11 +1554,16 @@ const Bill = () => {
               object-fit: contain;
             }
             .bill-header h1 {
-              font-size: 16px;
-              letter-spacing: 1px;
+              font-size: 22px;
+              letter-spacing: 0px;
               margin-bottom: 3px;
-              color: #333;
+              color: #000;
               font-weight: bold;
+              text-align: center;
+            }
+            
+            .bill-header p {
+              text-align: center;
             }
             
             .bill-header .owner {
@@ -1542,10 +1581,8 @@ const Bill = () => {
             }
             
             .bill-info {
-              margin: 10px 0;
-              padding: 6px 0;
-              border-top: 1px dashed #000;
-              border-bottom: 1px dashed #000;
+              margin: 4px 0;
+              padding: 4px 0;
             }
             
             .bill-info-row {
@@ -1609,24 +1646,33 @@ const Bill = () => {
               margin: 10px 0;
             }
             
-            .bill-items-header {
-              display: grid;
-              grid-template-columns: 2fr 1fr 1fr 1.5fr;
-              font-weight: bold;
-              padding: 4px 0;
-              border-bottom: 1px solid #000;
-              font-size: 10px;
-              background: #f0f0f0;
-              padding-left: 2px;
+            .bill-items table {
+              width: 100%;
+              border-collapse: collapse;
+              font-size: 9px;
             }
             
-            .bill-item {
-              display: grid;
-              grid-template-columns: 2fr 1fr 1fr 1.5fr;
-              padding: 3px 0;
+            .bill-items th {
+              font-weight: bold;
+              padding: 3px 2px;
+              border-top: 1px solid #000;
+              border-bottom: 1px solid #000;
+              background: #f0f0f0;
+              text-align: left;
+              font-size: 9px;
+            }
+            
+            .bill-items td {
+              padding: 3px 2px;
               border-bottom: 1px dotted #ccc;
               font-size: 9px;
-              padding-left: 2px;
+              vertical-align: top;
+            }
+            
+            .bill-items tfoot td {
+              border-top: 1px solid #000;
+              border-bottom: none;
+              font-weight: bold;
             }
             
             .bill-item-empty {
@@ -1689,7 +1735,7 @@ const Bill = () => {
               text-align: center;
               margin-top: 15px;
               padding-top: 10px;
-              border-top: 1px dashed #000;
+              border-top: none;
               font-size: 8px;
             }
             
@@ -1793,29 +1839,42 @@ const Bill = () => {
             ` : ''}
             
             <div class="bill-items">
-              <div class="bill-items-header">
-                <span>Item</span>
-                <span>Price</span>
-                <span>Qty</span>
-                <span>Total</span>
-              </div>
-              <div>
-                ${activeProducts.length === 0 ? `
-                  <div class="bill-item-empty">
-                    <span>--- No items in bill ---</span>
-                  </div>
-                ` : activeProducts.map(product => `
-                  <div class="bill-item">
-                    <span class="bill-item-name">
-                      ${product.name.length > 12 ? product.name.substring(0, 10) + '...' : product.name}
-                      ${product.model ? `<small class="bill-item-small">${product.model}</small>` : ''}
-                    </span>
-                    <span>₹${product.sellPrice}</span>
-                    <span>${product.quantity}</span>
-                    <span>₹${product.total.toFixed(2)}</span>
-                  </div>
-                `).join('')}
-              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Qty.</th>
+                    <th>PARTICULARS</th>
+                    <th>Batch</th>
+                    <th>Expiry</th>
+                    <th style="text-align:right">Amount<br/><span style="font-size:8px;font-weight:normal">Rs.&nbsp;&nbsp;&nbsp;&nbsp;P.</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${activeProducts.length === 0 ? `
+                    <tr><td colspan="5" style="text-align:center;color:#999;font-style:italic;padding:15px 0">--- No items in bill ---</td></tr>
+                  ` : activeProducts.map(product => `
+                    <tr>
+                      <td>${product.quantity}</td>
+                      <td>
+                        <div class="bill-item-name">
+                          ${product.name}
+                          ${product.model ? `<small class="bill-item-small">${product.model}</small>` : ''}
+                        </div>
+                      </td>
+                      <td style="font-size:7px">${product.batchNo || ''}</td>
+                      <td style="font-size:7px">${product.expiryDate || ''}</td>
+                      <td style="text-align:right">₹${product.total.toFixed(2)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3">E. &amp; O.E.</td>
+                    <td>TOTAL</td>
+                    <td style="text-align:right">₹${total.toFixed(2)}</td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
             
             <div class="bill-summary">
@@ -1913,7 +1972,7 @@ const Bill = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `Bill_${billNumber.replace(/[\/\\]/g, '-')}.html`;
+    link.download = `Bill_${billNumber.replace(/[/\\]/g, '-')}.html`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1934,7 +1993,7 @@ const Bill = () => {
 
     // Save to database first
     const savedData = await saveBillToDatabase();
-    
+
     if (savedData) {
       // Then download the bill
       downloadBill();
@@ -1952,15 +2011,15 @@ const Bill = () => {
 
     // Save to database first
     const savedData = await saveBillToDatabase();
-    
+
     if (savedData) {
       // Then print
       // Get the bill content
       const billContent = billPaperRef.current.outerHTML;
-      
+
       // Create a new window for printing
       const printWindow = window.open('', '_blank');
-      
+
       if (printWindow) {
         printWindow.document.write(`
           <!DOCTYPE html>
@@ -2000,16 +2059,26 @@ const Bill = () => {
                 
                 .bill-header {
                   text-align: center;
-                  margin-bottom: 12px;
-                  padding-bottom: 8px;
-                  border-bottom: 1px dashed #000 !important;
+                  margin-bottom: 4px;
+                  padding-bottom: 0px;
+                  border-bottom: none !important;
+                }
+                
+                .bill-header h1 {
+                  font-size: 22px !important;
+                  font-weight: bold !important;
+                  letter-spacing: 0px !important;
+                  color: #000 !important;
+                  text-align: center !important;
+                }
+                
+                .bill-header p {
+                  text-align: center !important;
                 }
                 
                 .bill-info {
-                  margin: 10px 0;
-                  padding: 6px 0;
-                  border-top: 1px dashed #000 !important;
-                  border-bottom: 1px dashed #000 !important;
+                  margin: 4px 0 !important;
+                  padding: 2px 0 !important;
                 }
                 
                 .customer-section {
@@ -2055,21 +2124,32 @@ const Bill = () => {
                   font-size: 10px;
                 }
                 
-                .bill-items-header {
-                  display: grid;
-                  grid-template-columns: 2fr 1fr 1fr 1.5fr;
-                  font-weight: bold;
-                  padding: 4px 0;
-                  border-bottom: 1px solid #000 !important;
-                  font-size: 10px;
+                .bill-items table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  font-size: 9px;
                 }
                 
-                .bill-item {
-                  display: grid;
-                  grid-template-columns: 2fr 1fr 1fr 1.5fr;
-                  padding: 3px 0;
+                .bill-items th {
+                  font-weight: bold;
+                  padding: 3px 2px;
+                  border-top: 1px solid #000 !important;
+                  border-bottom: 1px solid #000 !important;
+                  text-align: left;
+                  font-size: 9px;
+                }
+                
+                .bill-items td {
+                  padding: 3px 2px;
                   border-bottom: 1px dotted #000 !important;
                   font-size: 9px;
+                  vertical-align: top;
+                }
+                
+                .bill-items tfoot td {
+                  border-top: 1px solid #000 !important;
+                  border-bottom: none !important;
+                  font-weight: bold;
                 }
                 
                 .bill-summary {
@@ -2097,7 +2177,7 @@ const Bill = () => {
                   text-align: center;
                   margin-top: 15px;
                   padding-top: 10px;
-                  border-top: 1px dashed #000 !important;
+                  border-top: none !important;
                   font-size: 8px;
                 }
                 
@@ -2109,7 +2189,7 @@ const Bill = () => {
                   text-align: center;
                 }
                 
-                input, select, button, textarea {
+                input, select, button, textarea, .no-print {
                   display: none !important;
                 }
                 
@@ -2169,7 +2249,7 @@ const Bill = () => {
 
     // Clean phone number (remove non-digits)
     const cleanPhone = customerPhone.replace(/\D/g, '');
-    
+
     // Check if phone number is valid
     if (cleanPhone.length < 10) {
       setError('Please enter a valid 10-digit phone number');
@@ -2200,11 +2280,11 @@ const Bill = () => {
     if (patientAge) message += `Patient: ${patientAge}Y / ${patientGender}\n`;
     message += `================\n`;
     message += `ITEMS:\n`;
-    
+
     activeProducts.forEach(p => {
       message += `${p.name.substring(0, 15)}... ${p.quantity}x ₹${p.sellPrice} = ₹${p.total.toFixed(2)}\n`;
     });
-    
+
     message += `================\n`;
     message += `Subtotal: ₹${subtotal.toFixed(2)}\n`;
     if (discountAmount > 0) message += `Discount: -₹${discountAmount.toFixed(2)}\n`;
@@ -2222,10 +2302,10 @@ const Bill = () => {
 
     // Encode message for URL
     const encodedMessage = encodeURIComponent(message);
-    
+
     // Open WhatsApp with customer's number
     window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
-    
+
     setSuccess('WhatsApp opened with bill details!');
     setTimeout(() => setSuccess(''), 3000);
   };
@@ -2241,6 +2321,13 @@ const Bill = () => {
       setCustomerAddress('');
       setCustomerType('external');
       setCustomerDiscount(0);
+      setDoctorName('');
+      setDoctorRegNo('');
+      setPatientName('');
+      setPatientAge('');
+      setPatientGender('Male');
+      setPrescriptionImage(null);
+      setIsPrescriptionRequired(false);
       setDiscount(0);
       setDiscountType('percentage');
       setManualDiscount(false);
@@ -2289,9 +2376,8 @@ const Bill = () => {
   };
 
   // Run API test on mount
-  useEffect(() => {
-    testAPIConnection();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { testAPIConnection(); }, []);
 
   // Filter out items with quantity 0 for display in bill summary
   const activeProducts = selectedProducts.filter(p => p.quantity > 0);
@@ -2318,12 +2404,12 @@ const Bill = () => {
   // Show login required message if not authenticated
   if (!isAuthenticated) {
     return (
-      <div style={{...baseStyles.container, justifyContent: 'center', alignItems: 'center'}}>
-        <div style={{background: 'white', padding: '40px', borderRadius: '10px', textAlign: 'center'}}>
+      <div style={{ ...baseStyles.container, justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ background: 'white', padding: '40px', borderRadius: '10px', textAlign: 'center' }}>
           <h2>🔒 Authentication Required</h2>
-          <p style={{color: '#dc3545', margin: '20px 0'}}>{error || 'Please login to access billing'}</p>
-          <button 
-            style={{...baseStyles.btn, ...baseStyles.btnPrimary, padding: '10px 30px'}}
+          <p style={{ color: '#dc3545', margin: '20px 0' }}>{error || 'Please login to access billing'}</p>
+          <button
+            style={{ ...baseStyles.btn, ...baseStyles.btnPrimary, padding: '10px 30px' }}
             onClick={() => window.location.href = '/login'}
           >
             Go to Login
@@ -2343,23 +2429,19 @@ const Bill = () => {
 
   return (
     <div style={baseStyles.container}>
-      {/* Left Panel - Product Selection */}
+      {/* Left Panel - Product Search & Selection */}
       <div style={baseStyles.productPanel} className="no-print">
-        <h2 style={baseStyles.productPanelTitle}>🧾 Create New Bill</h2>
-        
+        <h2 style={baseStyles.productPanelTitle}>🔍 Search & Add Products</h2>
+
         {/* Company Selector */}
         {companies.length > 0 && (
           <div style={baseStyles.companySelector}>
-            <div 
-              style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}
+            <div
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               onClick={() => setShowCompanySelector(!showCompanySelector)}
             >
-              <span>
-                🏢 <span style={baseStyles.companyName}>
-                  {selectedCompany ? selectedCompany.name : 'Select Company'}
-                </span>
-              </span>
-              <span style={{fontSize: '12px'}}>{showCompanySelector ? '▲' : '▼'}</span>
+              <span>🏢 <span style={baseStyles.companyName}>{selectedCompany ? selectedCompany.name : 'Select Company'}</span></span>
+              <span style={{ fontSize: '12px' }}>{showCompanySelector ? '▲' : '▼'}</span>
             </div>
             {showCompanySelector && (
               <div style={baseStyles.companyDropdown}>
@@ -2378,123 +2460,56 @@ const Bill = () => {
             )}
           </div>
         )}
-        
-        {error && (
-          <div style={{...baseStyles.alert, ...baseStyles.alertError}}>
-            ⚠️ {error}
-          </div>
-        )}
-        
-        {success && (
-          <div style={{...baseStyles.alert, ...baseStyles.alertSuccess}}>
-            ✅ {success}
-          </div>
-        )}
-        
-        {/* Patient / Doctor Section */}
-        <div style={baseStyles.searchSection}>
-          <h3 style={{...baseStyles.selectedProductsTitle, border: 'none', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px'}}>
-            🩺 Patient & Doctor Information
-          </h3>
-          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px'}}>
-            <div style={baseStyles.searchBox}>
-              <label style={baseStyles.searchLabel}>Doctor Name:</label>
-              <input
-                type="text"
-                style={baseStyles.searchInput}
-                value={doctorName}
-                onChange={(e) => setDoctorName(e.target.value)}
-                placeholder="Dr. Name"
-              />
-            </div>
-            <div style={baseStyles.searchBox}>
-              <label style={baseStyles.searchLabel}>Doctor Reg No:</label>
-              <input
-                type="text"
-                style={baseStyles.searchInput}
-                value={doctorRegNo || ""}
-                onChange={(e) => setDoctorRegNo(e.target.value)}
-                placeholder="Reg No"
-              />
-            </div>
-          </div>
-          
-          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px'}}>
-            <div style={baseStyles.searchBox}>
-              <label style={baseStyles.searchLabel}>Patient Age:</label>
-              <input
-                type="number"
-                style={baseStyles.searchInput}
-                value={patientAge}
-                onChange={(e) => setPatientAge(e.target.value)}
-                placeholder="Age"
-              />
-            </div>
-            <div style={baseStyles.searchBox}>
-              <label style={baseStyles.searchLabel}>Patient Gender:</label>
-              <select
-                style={baseStyles.searchInput}
-                value={patientGender}
-                onChange={(e) => setPatientGender(e.target.value)}
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </div>
 
-          {/* Prescription Upload Section */}
-          <div style={{...baseStyles.searchBox, border: isPrescriptionRequired ? '2px solid #ef4444' : '1px solid #ddd', padding: '10px', borderRadius: '8px', background: isPrescriptionRequired ? '#fef2f2' : 'transparent'}}>
-            <label style={{...baseStyles.searchLabel, color: isPrescriptionRequired ? '#ef4444' : '#333'}}>
-              {isPrescriptionRequired ? '⚠️ Prescription Required' : '📄 Upload Prescription'}
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              style={{...baseStyles.searchInput, padding: '5px'}}
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onloadend = () => {
-                    setPrescriptionImage(reader.result);
-                  };
-                  reader.readAsDataURL(file);
-                }
-              }}
-            />
-            {prescriptionImage && (
-              <div style={{marginTop: '10px', textAlign: 'center'}}>
-                <img src={prescriptionImage} alt="Prescription" style={{maxWidth: '100%', maxHeight: '150px', borderRadius: '4px', border: '1px solid #ddd'}} />
-                <button 
-                  onClick={() => setPrescriptionImage(null)}
-                  style={{...baseStyles.btn, ...baseStyles.btnDanger, padding: '4px 8px', fontSize: '10px', marginTop: '5px'}}
-                >
-                  Remove
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      
-        <div style={baseStyles.searchSection}>
+        {error && <div style={{ ...baseStyles.alert, ...baseStyles.alertError }}>⚠️ {error}</div>}
+        {success && <div style={{ ...baseStyles.alert, ...baseStyles.alertSuccess }}>✅ {success}</div>}
+
+        {/* Product Search - TOP PRIORITY */}
+        <div style={{ ...baseStyles.searchSection, border: '2px solid #007bff', background: '#f0f7ff' }}>
           <div style={baseStyles.searchBox}>
-            <label style={baseStyles.searchLabel}>🔍 Search Products:</label>
+            <label style={{ ...baseStyles.searchLabel, fontSize: '16px', color: '#007bff' }}>🔍 Search Products:</label>
             <input
               type="text"
-              style={baseStyles.searchInput}
+              style={{ ...baseStyles.searchInput, borderColor: '#007bff', fontSize: '16px' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Type product name or model..."
               autoComplete="off"
-              onFocus={(e) => e.target.style.borderColor = '#007bff'}
-              onBlur={(e) => e.target.style.borderColor = '#ddd'}
+              autoFocus
+              onFocus={(e) => e.target.style.borderColor = '#0056b3'}
+              onBlur={(e) => e.target.style.borderColor = '#007bff'}
             />
             {searchLoading && <div style={baseStyles.searchLoading}>Searching...</div>}
           </div>
-          
-          <div style={baseStyles.barcodeInput}>
+
+          {/* Search Results Dropdown */}
+          {searchResults.length > 0 && (
+            <div style={{ ...baseStyles.searchResults, position: 'relative', width: '100%', maxHeight: '250px' }}>
+              {searchResults.map(product => (
+                <div
+                  key={product.id}
+                  style={baseStyles.searchResultItem}
+                  onClick={() => addProductToBill(product)}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#e8f4ff'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <div style={baseStyles.resultInfo}>
+                    <div style={baseStyles.resultName}>{product.name}</div>
+                    <div style={baseStyles.resultDetails}>
+                      {product.model && `${product.model} | `}Batch: {product.batchNo || 'N/A'} | Exp: {product.expiryDate || 'N/A'} | Stock: {product.quantity}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={baseStyles.resultPrice}>₹{product.sellPrice}</div>
+                    <div style={{ fontSize: '10px', color: '#28a745' }}>+ Add</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Barcode Scanner */}
+          <div style={{ ...baseStyles.barcodeInput, marginTop: '10px' }}>
             <input
               type="text"
               style={baseStyles.barcodeField}
@@ -2506,401 +2521,235 @@ const Bill = () => {
               onBlur={(e) => e.target.style.borderColor = '#ddd'}
             />
             <button
-              style={{
-                ...baseStyles.barcodeButton,
-                ...(loading ? baseStyles.barcodeButtonDisabled : {})
-              }}
+              style={{ ...baseStyles.barcodeButton, ...(loading ? baseStyles.barcodeButtonDisabled : {}) }}
               onClick={getProductByBarcode}
               disabled={loading}
             >
               {loading ? 'Adding...' : 'Add'}
             </button>
           </div>
-          
-          {searchResults.length > 0 && (
-            <div style={baseStyles.searchResults}>
-              {searchResults.map(product => (
-                <div
-                  key={product.id}
-                  style={baseStyles.searchResultItem}
-                  onClick={() => addProductToBill(product)}
-                  onMouseEnter={(e) => e.currentTarget.style.background = '#f0f7ff'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                >
-                  <div style={baseStyles.resultInfo}>
-                    <div style={baseStyles.resultName}>{product.name}</div>
-                    <div style={baseStyles.resultDetails}>
-                      {product.model || ''} | Stock: {product.quantity}
-                    </div>
-                  </div>
-                  <div style={baseStyles.resultPrice}>₹{product.sellPrice}</div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
-        
+
+        {/* Added Items List */}
         <div style={baseStyles.selectedProducts}>
           <h3 style={baseStyles.selectedProductsTitle}>
-            🛒 Current Bill Items ({activeProducts.length} active / {selectedProducts.length} total)
+            🛒 Bill Items ({activeProducts.length} active / {selectedProducts.length} total)
           </h3>
           <div style={baseStyles.selectedItemsList}>
             {selectedProducts.length === 0 ? (
-              <p style={baseStyles.noItems}>No items added yet. Search or scan products to add.</p>
+              <p style={baseStyles.noItems}>No items added yet. Search or scan products above.</p>
             ) : (
               selectedProducts.map(product => (
-                <div 
-                  key={product.id} 
-                  style={{
-                    ...baseStyles.selectedItem,
-                    ...(product.quantity === 0 ? dynamicStyles.zeroQuantity : {})
-                  }}
+                <div
+                  key={product.id}
+                  style={{ ...baseStyles.selectedItem, ...(product.quantity === 0 ? dynamicStyles.zeroQuantity : {}) }}
                 >
                   <div style={baseStyles.itemInfo}>
                     <span style={baseStyles.itemName}>{product.name}</span>
-                    {product.model && (
-                      <span style={baseStyles.itemModel}>{product.model}</span>
-                    )}
-                    {product.quantity === 0 && (
-                      <span style={{fontSize: '9px', color: '#856404'}}>(Zero quantity)</span>
-                    )}
+                    {product.model && <span style={baseStyles.itemModel}>{product.model}</span>}
+                    <span style={{ fontSize: '10px', color: '#666' }}>
+                      Batch: {product.batchNo || '-'} | Exp: {product.expiryDate || '-'}
+                    </span>
+                    {product.quantity === 0 && <span style={{ fontSize: '9px', color: '#856404' }}>(Zero qty)</span>}
                   </div>
                   <div style={baseStyles.itemPrice}>₹{product.sellPrice}</div>
-                  <input
-                    type="number"
-                    style={baseStyles.itemQuantity}
-                    value={product.quantity}
-                    min="0"
-                    max={product.maxQuantity}
-                    onChange={(e) => updateQuantity(product.id, e.target.value)}
-                  />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                    <button
+                      style={{ width: '22px', height: '22px', border: '1px solid #ccc', borderRadius: '3px', background: '#f0f0f0', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', lineHeight: '1', padding: '0' }}
+                      onClick={() => updateQuantity(product.id, product.quantity - 1)}
+                    >−</button>
+                    <input
+                      type="number"
+                      style={{ ...baseStyles.itemQuantity, width: '45px' }}
+                      value={product.quantity}
+                      min="0"
+                      max={product.maxQuantity}
+                      onChange={(e) => updateQuantity(product.id, e.target.value)}
+                    />
+                    <button
+                      style={{ width: '22px', height: '22px', border: '1px solid #ccc', borderRadius: '3px', background: '#f0f0f0', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', lineHeight: '1', padding: '0' }}
+                      onClick={() => updateQuantity(product.id, product.quantity + 1)}
+                      disabled={product.quantity >= product.maxQuantity}
+                    >+</button>
+                  </div>
                   <div style={baseStyles.itemTotal}>₹{product.total.toFixed(2)}</div>
                   <button
                     style={baseStyles.removeBtn}
                     onClick={() => removeProduct(product.id)}
                     onMouseEnter={(e) => e.currentTarget.style.background = '#c82333'}
                     onMouseLeave={(e) => e.currentTarget.style.background = '#dc3545'}
-                    title="Remove completely"
-                  >
-                    ×
-                  </button>
+                    title="Remove"
+                  >×</button>
                 </div>
               ))
             )}
           </div>
           {selectedProducts.length > 0 && (
-            <p style={{fontSize: '11px', color: '#666', marginTop: '10px', textAlign: 'center'}}>
-              💡 Set quantity to 0 to keep item in list (will not be billed)
+            <p style={{ fontSize: '11px', color: '#666', marginTop: '10px', textAlign: 'center' }}>
+              💡 Set quantity to 0 to keep item without billing
             </p>
           )}
         </div>
+
+        {/* Patient / Doctor Section - Below products */}
+        <div style={{ ...baseStyles.searchSection, marginTop: '20px' }}>
+          <h3 style={{ ...baseStyles.selectedProductsTitle, border: 'none', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            🩺 Patient & Doctor Information
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+            <div style={baseStyles.searchBox}>
+              <label style={baseStyles.searchLabel}>Doctor Name:</label>
+              <input type="text" style={baseStyles.searchInput} value={doctorName} onChange={(e) => setDoctorName(e.target.value)} placeholder="Dr. Name" />
+            </div>
+            <div style={baseStyles.searchBox}>
+              <label style={baseStyles.searchLabel}>Doctor Reg No:</label>
+              <input type="text" style={baseStyles.searchInput} value={doctorRegNo || ''} onChange={(e) => setDoctorRegNo(e.target.value)} placeholder="Reg No" />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+            <div style={baseStyles.searchBox}>
+              <label style={baseStyles.searchLabel}>Patient Name:</label>
+              <input type="text" style={baseStyles.searchInput} value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder="Patient Name" />
+            </div>
+            <div style={baseStyles.searchBox}>
+              <label style={baseStyles.searchLabel}>Patient Age:</label>
+              <input type="number" style={baseStyles.searchInput} value={patientAge} onChange={(e) => setPatientAge(e.target.value)} placeholder="Age" />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+            <div style={baseStyles.searchBox}>
+              <label style={baseStyles.searchLabel}>Patient Gender:</label>
+              <select style={baseStyles.searchInput} value={patientGender} onChange={(e) => setPatientGender(e.target.value)}>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div style={{ ...baseStyles.searchBox, border: isPrescriptionRequired ? '2px solid #ef4444' : '1px solid #ddd', padding: '10px', borderRadius: '8px', background: isPrescriptionRequired ? '#fef2f2' : 'transparent' }}>
+            <label style={{ ...baseStyles.searchLabel, color: isPrescriptionRequired ? '#ef4444' : '#333' }}>
+              {isPrescriptionRequired ? '⚠️ Prescription Required' : '📄 Upload Prescription'}
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              style={{ ...baseStyles.searchInput, padding: '5px' }}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => setPrescriptionImage(reader.result);
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+            {prescriptionImage && (
+              <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                <img src={prescriptionImage} alt="Prescription" style={{ maxWidth: '100%', maxHeight: '150px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                <button onClick={() => setPrescriptionImage(null)} style={{ ...baseStyles.btn, ...baseStyles.btnDanger, padding: '4px 8px', fontSize: '10px', marginTop: '5px' }}>Remove</button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      
+
+
       {/* Right Panel - Thermal Bill */}
       <div style={baseStyles.billPanel} className="no-print">
         <div style={baseStyles.billContainer}>
-          <div 
-            style={baseStyles.billPaper} 
-            id="billPaper" 
+          <div
+            style={baseStyles.billPaper}
+            id="billPaper"
             ref={billPaperRef}
           >
             <div className="bill-header">
-              <img src="/ganapathy-logo.png" alt="GANAPATHY MEDICALS Logo" style={{ maxWidth: '100px', marginBottom: '5px', display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
-              <h1 className="brand-royal-print" style={baseStyles.billHeaderH1}>{shopDetails.name}</h1>
+              {/* Top info bar: GSTIN | CASH BILL | Mobile */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '8px', marginBottom: '4px', borderBottom: '1px solid #333', paddingBottom: '4px' }}>
+                <div><strong>GSTIN:</strong> {customerGST || shopDetails.gst || defaultShopDetails.gst}</div>
+                <span style={{ fontWeight: 'bold', textDecoration: 'underline', fontSize: '10px' }}>CASH BILL</span>
+                <span style={{ fontWeight: 'bold' }}>Mob: {shopDetails.phone || defaultShopDetails.phone}</span>
+              </div>
+              <h1 style={baseStyles.billHeaderH1}>{shopDetails.name}</h1>
+              <p style={{ ...baseStyles.billHeaderP, fontWeight: 'bold', fontSize: '10px' }}>{shopDetails.subtitle || defaultShopDetails.subtitle}</p>
               <p style={baseStyles.billHeaderP}>{shopDetails.address}</p>
-              <p style={baseStyles.billHeaderP}>{shopDetails.city}</p>
-              {shopDetails.phone && <p style={baseStyles.billHeaderP}>Ph: {shopDetails.phone}</p>}
-              {shopDetails.gst && <p style={baseStyles.billHeaderP}>GST: {shopDetails.gst}</p>}
+              {shopDetails.city && <p style={baseStyles.billHeaderP}>{shopDetails.city}</p>}
             </div>
-            
-            <div className="bill-info">
-              <div style={baseStyles.billInfoRow}>
-                <span>Bill No:</span>
-                <span style={baseStyles.billNumber}>{billNumber}</span>
+
+            <div className="bill-info" style={{ margin: '4px 0', padding: '2px 0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', fontSize: '10px', marginBottom: '4px', gap: '4px', overflow: 'hidden' }}>
+                <span style={{ whiteSpace: 'nowrap', flexShrink: 0 }}><strong>Bill No.</strong> <span style={{ fontSize: '11px', fontWeight: 'bold', letterSpacing: '0px' }}>{billNumber}</span></span>
+                <span style={{ whiteSpace: 'nowrap', flexShrink: 0 }}><strong>Date:</strong> {currentDate}</span>
               </div>
-              <div style={baseStyles.billInfoRow}>
-                <span>Date:</span>
-                <span>{currentDate}</span>
+              <div style={{ fontSize: '10px', marginBottom: '8px' }}>
+                <strong>Dr.</strong>&nbsp;{doctorName ? `${doctorName}${doctorRegNo ? ` (${doctorRegNo})` : ''}` : ''}
+                <div style={{ borderBottom: '1px dotted #999', marginTop: '4px' }}></div>
               </div>
-              <div style={baseStyles.billInfoRow}>
-                <span>Time:</span>
-                <span>{currentTime}</span>
+              <div style={{ fontSize: '10px', marginBottom: '8px' }}>
+                <strong>Name.</strong>&nbsp;{patientName}{patientAge ? `, ${patientAge}Y` : ''}{patientGender ? ` / ${patientGender}` : ''}
+                <div style={{ borderBottom: '1px dotted #999', marginTop: '4px' }}></div>
               </div>
             </div>
-            
-            <div className="customer-section">
-              <div style={baseStyles.customerRow}>
-                <span style={baseStyles.customerLabel}>Customer Type:</span>
-                <span 
-                  style={{
-                    ...baseStyles.customerTypeBadge,
-                    ...(customerType === 'internal' ? baseStyles.internalBadge : baseStyles.externalBadge)
-                  }}
-                >
-                  {customerType === 'internal' ? '🏢 INTERNAL' : '👤 EXTERNAL'}
-                </span>
-              </div>
-              
-              <div style={baseStyles.customerRow}>
-                <span style={baseStyles.customerLabel}>Name:</span>
-                <span style={baseStyles.customerValue}>{customerName}</span>
-              </div>
-              
-              {customerPhone && (
-                <div style={baseStyles.customerRow}>
-                  <span style={{...baseStyles.customerLabel, color: '#007bff'}}>Phone Number:</span>
-                  <span style={baseStyles.customerValue}>{customerPhone}</span>
-                </div>
-              )}
-              
-              {customerEmail && (
-                <div style={baseStyles.customerRow}>
-                  <span style={baseStyles.customerLabel}>Email:</span>
-                  <span style={baseStyles.customerValue}>{customerEmail}</span>
-                </div>
-              )}
-              
-              {customerAddress && (
-                <div style={baseStyles.customerRow}>
-                  <span style={baseStyles.customerLabel}>Address:</span>
-                  <span style={baseStyles.customerValue}>{customerAddress}</span>
-                </div>
-              )}
-              
-              {customerGST && (
-                <div style={baseStyles.customerRow}>
-                  <span style={baseStyles.customerLabel}>GST:</span>
-                  <span style={baseStyles.customerValue}>{customerGST}</span>
-                </div>
-              )}
+            <div className="no-print" style={{ fontSize: '10px', borderBottom: '1px dotted #999', paddingBottom: '4px', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+
+              <input type="text" style={{ ...baseStyles.customerInput, marginBottom: 0, flex: 1 }} value={customerGST} onChange={(e) => setCustomerGST(e.target.value)} placeholder="Customer GSTIN" />
             </div>
-            
-            {/* Medical Section */}
-            {(doctorName || patientAge) && (
-              <div style={baseStyles.medicalSection}>
-                {doctorName && (
-                  <div style={baseStyles.medicalRow}>
-                    <span style={baseStyles.medicalLabel}>Doctor:</span>
-                    <span>{doctorName} {doctorRegNo ? `(${doctorRegNo})` : ''}</span>
-                  </div>
-                )}
-                <div style={baseStyles.medicalRow}>
-                  <span style={baseStyles.medicalLabel}>Patient:</span>
-                  <span>{patientAge}Y / {patientGender}</span>
-                </div>
-              </div>
-            )}
-            {/* Customer Inputs (No Print) */}
-            <div style={baseStyles.customerSection} className="no-print">
-              <select
-                style={baseStyles.customerTypeSelect}
-                value={customerType}
-                onChange={(e) => {
-                  setCustomerType(e.target.value);
-                  setManualDiscount(false); // Reset manual discount flag when customer type changes
-                }}
-              >
-                <option value="external">👤 External Customer</option>
-                <option value="internal">🏢 Internal (Staff)</option>
-              </select>
-              
-              <input
-                type="text"
-                style={baseStyles.customerInput}
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                placeholder="Customer Name"
-              />
-              
-              <input
-                type="text"
-                style={{
-                  ...baseStyles.customerInput,
-                  borderColor: fetchingCustomer ? '#007bff' : '#ddd',
-                  background: fetchingCustomer ? '#f0f7ff' : 'white'
-                }}
-                value={customerPhone}
-                onChange={handlePhoneChange}
-                placeholder={fetchingCustomer ? "Searching..." : "Phone Number"}
-                maxLength="10"
-              />
-              
-              <input
-                type="email"
-                style={baseStyles.customerInput}
-                value={customerEmail}
-                onChange={(e) => setCustomerEmail(e.target.value)}
-                placeholder="Email Address"
-              />
-              
-              <input
-                type="text"
-                style={baseStyles.customerInput}
-                value={customerAddress}
-                onChange={(e) => setCustomerAddress(e.target.value)}
-                placeholder="Address"
-              />
-              
-              <input
-                type="text"
-                style={baseStyles.customerInput}
-                value={customerGST}
-                onChange={(e) => setCustomerGST(e.target.value)}
-                placeholder="GST Number (if applicable)"
-              />
-            </div>
-            
-            {/* Discount Section - Enhanced */}
-            <div style={baseStyles.discountSection} className="no-print">
-              <div 
-                style={baseStyles.discountHeader}
-                onClick={() => setShowDiscountInput(!showDiscountInput)}
-              >
-                <span style={baseStyles.discountTitle}>
-                  {manualDiscount ? '✏️ Manual Discount' : '💰 Default Discount'}
-                </span>
-                <span style={baseStyles.discountToggle}>
-                  {showDiscountInput ? '▼' : '▶'}
-                </span>
-              </div>
-              
-              {showDiscountInput && (
-                <div style={baseStyles.discountControls}>
-                  <select
-                    style={baseStyles.discountTypeSelect}
-                    value={discountType}
-                    onChange={(e) => handleDiscountTypeChange(e.target.value)}
-                  >
-                    <option value="percentage">Percentage (%)</option>
-                    <option value="fixed">Fixed Amount (₹)</option>
-                  </select>
-                  
-                  <input
-                    type="number"
-                    style={baseStyles.discountInput}
-                    value={discount}
-                    onChange={(e) => handleDiscountChange(e.target.value)}
-                    min="0"
-                    max={discountType === 'percentage' ? 100 : subtotal}
-                    step={discountType === 'percentage' ? '1' : '0.01'}
-                    placeholder={discountType === 'percentage' ? 'Enter %' : 'Enter amount'}
-                  />
-                </div>
-              )}
-              
-              <div style={baseStyles.discountAmount}>
-                Discount Amount: -₹{discountAmount.toFixed(2)}
-                {!manualDiscount && customerType === 'internal' && (
-                  <span style={{fontSize: '8px', marginLeft: '5px', color: '#666'}}>
-                    (Staff discount)
-                  </span>
-                )}
-              </div>
-              
-              {manualDiscount && (
-                <button
-                  style={{
-                    ...baseStyles.btn,
-                    ...baseStyles.btnSecondary,
-                    fontSize: '9px',
-                    padding: '2px 5px',
-                    marginTop: '5px',
-                    width: '100%'
-                  }}
-                  onClick={resetDiscountToDefault}
-                >
-                  Reset to Default
-                </button>
-              )}
-            </div>
-            
-            <div className="bill-items">
-              <div style={baseStyles.billItemsHeader}>
-                <span>Medicine</span>
-                <span>Batch/Exp</span>
-                <span>Qty</span>
-                <span>Total</span>
-              </div>
-              <div>
+
+            <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #333', marginTop: '4px', fontSize: '9px', fontFamily: "'Courier New', monospace" }}>
+              <thead>
+                <tr>
+                  <th style={{ border: '1px solid #333', padding: '3px 2px', fontWeight: 'bold', textAlign: 'center', width: '28px' }}>Qty.</th>
+                  <th style={{ border: '1px solid #333', padding: '3px 2px', fontWeight: 'bold', textAlign: 'center' }}>PARTICULARS</th>
+                  <th style={{ border: '1px solid #333', padding: '3px 2px', fontWeight: 'bold', textAlign: 'center', width: '36px' }}>Batch</th>
+                  <th style={{ border: '1px solid #333', padding: '3px 2px', fontWeight: 'bold', textAlign: 'center', width: '36px' }}>Expiry</th>
+                  <th style={{ border: '1px solid #333', padding: '0', fontWeight: 'bold', textAlign: 'center', width: '54px' }}>
+                    <div style={{ borderBottom: '1px solid #333', padding: '2px 3px' }}>Amount</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1px 4px', fontSize: '8px' }}><span>Rs.</span><span>P.</span></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
                 {activeProducts.length === 0 ? (
-                  <div style={baseStyles.billItemEmpty}>
-                    <span>--- No items in bill ---</span>
-                  </div>
+                  <tr>
+                    <td style={{ border: '1px solid #333', padding: '3px 2px', textAlign: 'center', height: '140px', verticalAlign: 'top' }}></td>
+                    <td style={{ border: '1px solid #333', padding: '3px 2px', height: '140px', verticalAlign: 'top' }}></td>
+                    <td style={{ border: '1px solid #333', padding: '3px 2px', height: '140px', verticalAlign: 'top' }}></td>
+                    <td style={{ border: '1px solid #333', padding: '3px 2px', height: '140px', verticalAlign: 'top' }}></td>
+                    <td style={{ border: '1px solid #333', padding: '3px 2px', height: '140px', verticalAlign: 'top' }}></td>
+                  </tr>
                 ) : (
                   activeProducts.map(product => (
-                    <div key={product.id} style={baseStyles.billItem}>
-                      <span style={baseStyles.billItemName}>
+                    <tr key={product.id}>
+                      <td style={{ border: '1px solid #333', padding: '3px 2px', textAlign: 'center', verticalAlign: 'top' }}>{product.quantity}</td>
+                      <td style={{ border: '1px solid #333', padding: '3px 2px', verticalAlign: 'top' }}>
                         {product.name}
-                        <small style={baseStyles.billItemSmall}>{product.model}</small>
-                      </span>
-                      <span style={{fontSize: '7px', color: '#666'}}>
-                        {product.batchNo}<br/>
-                        {product.expiryDate}
-                      </span>
-                      <span>{product.quantity}</span>
-                      <span>₹{product.total.toFixed(2)}</span>
-                    </div>
+                        {product.model && <div style={{ fontSize: '7px', color: '#555' }}>{product.model}</div>}
+                      </td>
+                      <td style={{ border: '1px solid #333', padding: '3px 2px', fontSize: '7px', textAlign: 'center', verticalAlign: 'top' }}>{product.batchNo}</td>
+                      <td style={{ border: '1px solid #333', padding: '3px 2px', fontSize: '7px', textAlign: 'center', verticalAlign: 'top' }}>{product.expiryDate}</td>
+                      <td style={{ border: '1px solid #333', padding: '3px 2px', textAlign: 'right', verticalAlign: 'top' }}>{product.total.toFixed(2)}</td>
+                    </tr>
                   ))
                 )}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td style={{ border: '1px solid #333', padding: '3px 2px' }}></td>
+                  <td style={{ border: '1px solid #333', padding: '3px 2px', fontSize: '8px' }}>E. &amp; O.E.</td>
+                  <td style={{ border: '1px solid #333', padding: '3px 2px' }}></td>
+                  <td style={{ border: '1px solid #333', padding: '3px 2px', fontWeight: 'bold', fontSize: '8px', textAlign: 'center' }}>TOTAL</td>
+                  <td style={{ border: '1px solid #333', padding: '3px 2px', fontWeight: 'bold', textAlign: 'right' }}>{total.toFixed(2)}</td>
+                </tr>
+              </tfoot>
+            </table>
+
+            {/* Summary only shows discount/tax if applicable */}
+            {(discount > 0 || tax > 0) && (
+              <div style={{ fontSize: '9px', padding: '3px 2px', borderBottom: '1px dotted #ccc' }}>
+                {discount > 0 && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Discount ({discount}{discountType === 'percentage' ? '%' : '₹'}):</span><span>-₹{discountAmount.toFixed(2)}</span></div>}
+                {tax > 0 && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Tax ({tax}{taxType === 'percentage' ? '%' : '₹'}):</span><span>+₹{taxAmount.toFixed(2)}</span></div>}
               </div>
-            </div>
-            
-            <div className="bill-summary">
-              <div className="summary-row">
-                <span>Subtotal:</span>
-                <span>₹{subtotal.toFixed(2)}</span>
-              </div>
-              
-              <div className="summary-row">
-                <span>
-                  Discount 
-                  {discount > 0 && (
-                    <span style={{fontSize: '8px', color: '#666'}}>
-                      {' '}({discount}{discountType === 'percentage' ? '%' : '₹'})
-                    </span>
-                  )}:
-                </span>
-                <span>-₹{discountAmount.toFixed(2)}</span>
-              </div>
-              
-              <div className="summary-row">
-                <span>After Discount:</span>
-                <span>₹{(subtotal - discountAmount).toFixed(2)}</span>
-              </div>
-              
-              {tax > 0 && (
-                <>
-                  <div className="summary-row">
-                    <span>
-                      CGST 
-                      {taxType === 'percentage' && (
-                        <span style={{fontSize: '8px', color: '#666'}}>
-                          {' '}({tax/2}%)
-                        </span>
-                      )}:
-                    </span>
-                    <span>+₹{(taxAmount/2).toFixed(2)}</span>
-                  </div>
-                  <div className="summary-row">
-                    <span>
-                      SGST 
-                      {taxType === 'percentage' && (
-                        <span style={{fontSize: '8px', color: '#666'}}>
-                          {' '}({tax/2}%)
-                        </span>
-                      )}:
-                    </span>
-                    <span>+₹{(taxAmount/2).toFixed(2)}</span>
-                  </div>
-                </>
-              )}
-              
-              <div className="summary-row summary-row-total">
-                <span>Total:</span>
-                <span>₹{total.toFixed(2)}</span>
-              </div>
-            </div>
-            
+            )}
+
             <div className="payment-section">
               <div style={baseStyles.paymentRow}>
                 <span>Payment Method:</span>
@@ -2916,7 +2765,7 @@ const Bill = () => {
                   <option value="mixed">🔄 Mixed</option>
                 </select>
               </div>
-              
+
               {showPaymentDetails && (
                 <div style={baseStyles.paymentDetails}>
                   {paymentMethod === 'cash' && (
@@ -2938,7 +2787,7 @@ const Bill = () => {
                       </div>
                     </>
                   )}
-                  
+
                   {paymentMethod === 'card' && (
                     <>
                       <input
@@ -2965,7 +2814,7 @@ const Bill = () => {
                       />
                     </>
                   )}
-                  
+
                   {paymentMethod === 'upi' && (
                     <>
                       <input
@@ -2984,7 +2833,7 @@ const Bill = () => {
                       />
                     </>
                   )}
-                  
+
                   {paymentMethod === 'cheque' && (
                     <>
                       <input
@@ -3003,15 +2852,15 @@ const Bill = () => {
                       />
                     </>
                   )}
-                  
+
                   {paymentMethod === 'mixed' && (
-                    <div style={{fontSize: '9px', color: '#666'}}>
+                    <div style={{ fontSize: '9px', color: '#666' }}>
                       <p>Mixed payment - Please enter details in POS</p>
                     </div>
                   )}
                 </div>
               )}
-              
+
               <div style={baseStyles.paymentRow}>
                 <span>Paid Amount:</span>
                 <input
@@ -3023,25 +2872,25 @@ const Bill = () => {
                   step="0.01"
                 />
               </div>
-              
+
               <div style={baseStyles.paymentRow}>
                 <span>Payment Status:</span>
                 <span style={{
-                  color: paymentStatus === 'paid' ? '#28a745' : 
-                         paymentStatus === 'partial' ? '#ffc107' : '#dc3545',
+                  color: paymentStatus === 'paid' ? '#28a745' :
+                    paymentStatus === 'partial' ? '#ffc107' : '#dc3545',
                   fontWeight: 'bold'
                 }}>
                   {paymentStatus.toUpperCase()}
                 </span>
               </div>
-              
+
               {due > 0 && paymentStatus !== 'pending' && (
                 <div style={baseStyles.paymentRow}>
                   <span>Due Amount:</span>
                   <span>₹{due.toFixed(2)}</span>
                 </div>
               )}
-              
+
               <button
                 style={{
                   ...baseStyles.btn,
@@ -3055,94 +2904,102 @@ const Bill = () => {
                 Exact Amount
               </button>
             </div>
-            
-            <div className="bill-footer">
-              <p style={baseStyles.billFooterP}>Thank you for your purchase!</p>
-              <p style={baseStyles.billFooterP}>Goods once sold not returnable</p>
-              <p style={baseStyles.billFooterP}>** Computer generated bill **</p>
-              {paymentMethod !== 'cash' && transactionId && (
-                <p style={baseStyles.billFooterP}>
-                  {paymentMethod.toUpperCase()}: {transactionId}
-                </p>
-              )}
-              <div style={{marginTop: '5px', paddingTop: '3px', borderTop: '1px dotted #ccc', fontSize: '8px', color: '#666'}}>
-                Bill created by: {createdBy}
+
+            <div className="bill-footer" style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px solid #333', fontSize: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span>Cash Received with thanks</span>
+                <span style={{ fontWeight: 'bold' }}>Signature</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div style={{ textAlign: 'left' }}>
+                  <p style={{ ...baseStyles.billFooterP, margin: '0 0 2px 0' }}>Goods once sold cannot be taken back.</p>
+                  <p style={{ ...baseStyles.billFooterP, margin: '0 0 2px 0' }}>{shopDetails.dlNo || defaultShopDetails.dlNo}</p>
+                  {paymentMethod !== 'cash' && transactionId && (
+                    <p style={{ ...baseStyles.billFooterP, margin: '0' }}>{paymentMethod.toUpperCase()}: {transactionId}</p>
+                  )}
+                </div>
+                <div style={{ color: '#666', whiteSpace: 'nowrap', marginLeft: '8px' }}>
+                  Served by: {createdBy}
+                </div>
               </div>
             </div>
           </div>
-          
-          <div style={baseStyles.actionButtons} className="no-print">
-            <button
-              style={{
-                ...baseStyles.btn,
-                ...baseStyles.btnPrimary,
-                ...(loading || activeProducts.length === 0 ? baseStyles.btnDisabled : {})
-              }}
-              onClick={handlePrint}
-              disabled={loading || activeProducts.length === 0}
-            >
-              {loading ? '⏳ Saving...' : '🖨️ Print'}
-            </button>
-            <button
-              style={{
-                ...baseStyles.btn,
-                ...baseStyles.btnSuccess,
-                ...(loading || activeProducts.length === 0 ? baseStyles.btnDisabled : {})
-              }}
-              onClick={handlePaymentComplete}
-              disabled={loading || activeProducts.length === 0}
-            >
-              {loading ? '⏳ Saving...' : '💰 Pay & Download'}
-            </button>
-            <button
-              style={{
-                ...baseStyles.btn,
-                ...baseStyles.btnInfo,
-                ...(loading ? baseStyles.btnDisabled : {})
-              }}
-              onClick={handleNewBill}
-              disabled={loading}
-            >
-              🆕 New
-            </button>
-            <button
-              style={{
-                ...baseStyles.btn,
-                ...baseStyles.btnDanger,
-                ...(loading ? baseStyles.btnDisabled : {})
-              }}
-              onClick={clearBill}
-              disabled={loading}
-            >
-              🗑️ Clear
-            </button>
-          </div>
-
-          {/* WhatsApp Share Button - Always visible when bill is saved */}
-          {showWhatsApp && lastGeneratedBill && (
-            <button
-              style={baseStyles.whatsappButton}
-              onClick={handleWhatsAppShare}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#128C7E'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#25D366'}
-            >
-              <span>📱</span>
-              Share Bill on WhatsApp to {customerPhone || 'Customer'}
-            </button>
-          )}
-
-          {billSaved && (
-            <p style={{fontSize: '10px', color: '#28a745', textAlign: 'center', marginTop: '5px'}}>
-              ✓ Bill saved to database
-            </p>
-          )}
         </div>
+
+        <div style={baseStyles.actionButtons} className="no-print">
+          <button
+            style={{
+              ...baseStyles.btn,
+              ...baseStyles.btnPrimary,
+              ...(loading || activeProducts.length === 0 ? baseStyles.btnDisabled : {})
+            }}
+            onClick={handlePrint}
+            disabled={loading || activeProducts.length === 0}
+          >
+            {loading ? '⏳ Saving...' : '🖨️ Print'}
+          </button>
+          <button
+            style={{
+              ...baseStyles.btn,
+              ...baseStyles.btnSuccess,
+              ...(loading || activeProducts.length === 0 ? baseStyles.btnDisabled : {})
+            }}
+            onClick={handlePaymentComplete}
+            disabled={loading || activeProducts.length === 0}
+          >
+            {loading ? '⏳ Saving...' : '💰 Pay & Download'}
+          </button>
+          <button
+            style={{
+              ...baseStyles.btn,
+              ...baseStyles.btnInfo,
+              ...(loading ? baseStyles.btnDisabled : {})
+            }}
+            onClick={handleNewBill}
+            disabled={loading}
+          >
+            🆕 New
+          </button>
+          <button
+            style={{
+              ...baseStyles.btn,
+              ...baseStyles.btnDanger,
+              ...(loading ? baseStyles.btnDisabled : {})
+            }}
+            onClick={clearBill}
+            disabled={loading}
+          >
+            🗑️ Clear
+          </button>
+        </div>
+
+        {/* WhatsApp Share Button - Always visible when bill is saved */}
+        {showWhatsApp && lastGeneratedBill && (
+          <button
+            style={baseStyles.whatsappButton}
+            onClick={handleWhatsAppShare}
+            onMouseEnter={(e) => e.currentTarget.style.background = '#128C7E'}
+            onMouseLeave={(e) => e.currentTarget.style.background = '#25D366'}
+          >
+            <span>📱</span>
+            Share Bill on WhatsApp to {customerPhone || 'Customer'}
+          </button>
+        )}
+
+        {billSaved && (
+          <p style={{ fontSize: '10px', color: '#28a745', textAlign: 'center', marginTop: '5px' }}>
+            ✓ Bill saved to database
+          </p>
+        )}
       </div>
-      
-      {/* Hidden download link */}
-      <a ref={downloadLinkRef} style={baseStyles.downloadLink}></a>
+      <div>
+        {/* Hidden download link */}
+        {/* eslint-disable-next-line jsx-a11y/anchor-has-content, jsx-a11y/anchor-is-valid */}
+        <a ref={downloadLinkRef} style={baseStyles.downloadLink} href="#download" aria-hidden="true" />
+      </div>
     </div>
   );
 };
 
 export default Bill;
+

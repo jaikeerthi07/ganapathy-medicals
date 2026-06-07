@@ -1,11 +1,23 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token
 import json
-
-from app.models.login import db, login
-from app.models.usertype import UserType
+import os
 
 login_bp = Blueprint('login_bp', __name__)
+
+USERS_FILE = os.path.join(os.path.dirname(__file__), '..', 'users.json')
+
+
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        return []
+    with open(USERS_FILE, 'r') as f:
+        return json.load(f)
+
+
+def save_users(users):
+    with open(USERS_FILE, 'w') as f:
+        json.dump(users, f, indent=2)
 
 
 # ---------- USER REGISTER ----------
@@ -19,18 +31,18 @@ def register():
     if not email or not username or not password:
         return jsonify({'error': 'All fields are required'}), 400
 
-    if login.query.filter_by(email=email).first():
+    users = load_users()
+    if any(u['email'] == email for u in users):
         return jsonify({'error': 'Email already exists'}), 409
 
-    # [No hashing (plain password)]
-    new_user = login(
-        email=email,
-        username=username,
-        password=password
-    )
-
-    db.session.add(new_user)
-    db.session.commit()
+    new_user = {
+        'id': len(users) + 1,
+        'email': email,
+        'username': username,
+        'password': password
+    }
+    users.append(new_user)
+    save_users(users)
 
     return jsonify({'message': 'User registered successfully'}), 201
 
@@ -45,33 +57,31 @@ def user_login():
     if not email or not password:
         return jsonify({'error': 'Email and password are required'}), 400
 
-    # [DEVELOPMENT BYPASS] Accept any email and password
-    user = login.query.filter_by(email=email).first()
-    
+    users = load_users()
+    user = next((u for u in users if u['email'] == email), None)
+
     if not user:
-        # Create a mock user if not found in DB
         user_data = {
             'id': 999,
             'username': email.split('@')[0],
             'email': email,
             'user_type': 'Admin',
-            'permissions': {} # Add default permissions if needed
+            'permissions': {}
         }
     else:
         user_data = {
-            'id': user.id,
-            'username': user.username,
-            'email': user.email,
+            'id': user['id'],
+            'username': user['username'],
+            'email': user['email'],
             'user_type': 'Admin',
             'permissions': {}
         }
 
-    # Generate JWT token
     access_token = create_access_token(identity=user_data['id'])
 
     return jsonify({
         'user': user_data,
         'access_token': access_token,
-        'message': 'Login successful (Bypass enabled)'
+        'message': 'Login successful'
     }), 200
 

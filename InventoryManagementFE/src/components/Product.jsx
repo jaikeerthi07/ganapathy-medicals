@@ -1435,6 +1435,15 @@ export default function ItemsPage() {
                 />
               </div>
               <div style={modalStyles.formGroup}>
+                <label style={modalStyles.label}>Rack Number</label>
+                <input
+                  style={modalStyles.input}
+                  value={editingItem.rackNo || ""}
+                  onChange={(e) => handleEditChange("rackNo", e.target.value)}
+                  placeholder="e.g. R-1"
+                />
+              </div>
+              {/* <div style={modalStyles.formGroup}>
                 <label style={modalStyles.label}>HSN Code</label>
                 <input
                   style={modalStyles.input}
@@ -1442,10 +1451,10 @@ export default function ItemsPage() {
                   onChange={(e) => handleEditChange("hsnCode", e.target.value)}
                   placeholder="Enter HSN"
                 />
-              </div>
+              </div> */}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            {/* <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
               <div style={modalStyles.formGroup}>
                 <label style={modalStyles.label}>Rack Number</label>
                 <input
@@ -1464,9 +1473,9 @@ export default function ItemsPage() {
                   placeholder="e.g. S-5"
                 />
               </div>
-            </div>
+            </div> */}
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            {/* <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
               <div style={modalStyles.formGroup}>
                 <label style={modalStyles.label}>Storage Conditions</label>
                 <select
@@ -1491,7 +1500,7 @@ export default function ItemsPage() {
                   placeholder="10"
                 />
               </div>
-            </div>
+            </div> */}
 
             <div style={modalStyles.formGroup}>
               <label style={{...modalStyles.label, display: 'flex', alignItems: 'center', cursor: 'pointer'}}>

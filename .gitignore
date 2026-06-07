@@ -10,6 +10,7 @@ InventoryManagementFE/coverage/
 InventoryManagementFE/build/
 
 # python
+venv/
 InventoryManagementBE/venv/
 InventoryManagementBE/__pycache__/
 InventoryManagementBE/*.pyc
