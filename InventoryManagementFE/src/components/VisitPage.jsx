@@ -192,6 +192,7 @@ const VisitBillPage = () => {
           logo: null,
           logoUrl: null
         });
+        fetchBills();
       }
     } catch (err) {
       console.error('Error fetching companies:', err);
@@ -207,6 +208,7 @@ const VisitBillPage = () => {
         logo: null,
         logoUrl: null
       });
+      fetchBills();
     } finally {
       setLoadingCompany(false);
     }
